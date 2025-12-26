@@ -18,6 +18,9 @@ export class Post {
   @Column()
   author_id: number;
 
+  @Column({ nullable: true })
+  parent_id: number;
+
   @Column({ type: 'text' })
   content: string;
 
@@ -33,4 +36,14 @@ export class Post {
 
   @OneToMany(() => Like, (like) => like.post)
   likes: Like[];
+
+  @ManyToOne(() => Post, (post) => post.replies, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'parent_id' })
+  parent: Post;
+
+  @OneToMany(() => Post, (post) => post.parent)
+  replies: Post[];
+
+  @Column({ default: 0 })
+  replies_count: number;
 }

@@ -30,11 +30,15 @@ export class PostsController {
   async findAllByUserId(@Param('userId', ParseIntPipe) userId: number) {
     return await this.postsService.findAllByUserId(userId);
   }
+  @Get('/:id/replies')
+  async findAllByParentId(@Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.findAllByParentId(id);
+  }
 
   @Post('')
   @UseGuards(JwtAuthGuard)
   create(@Body() createPostDto: CreatePostDto, @CurrentUser() CurrentUser) {
-    return this.postsService.create(createPostDto.content, CurrentUser.id);
+    return this.postsService.create(createPostDto, CurrentUser.id);
   }
 
   @Patch('/:id')

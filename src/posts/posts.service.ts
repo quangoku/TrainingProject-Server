@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { LikesService } from 'src/likes/like.service';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -18,6 +19,9 @@ export class PostsService {
       take: 10,
       relations: {
         author: true,
+      },
+      where: {
+        parent_id: IsNull(),
       },
     });
   }
@@ -38,18 +42,38 @@ export class PostsService {
     });
   }
 
-  async create(content: string, userId: number): Promise<Post> {
+  async findAllByParentId(parentId: number): Promise<Post[]> {
+    return await this.postRepository.find({
+      where: { parent_id: parentId },
+      relations: {
+        author: true,
+      },
+    });
+  }
+
+  async create(createPostDto: CreatePostDto, userId: number): Promise<Post> {
     try {
       const author = await this.userService.findOne(userId);
       if (!author) {
         throw new HttpException('author not found', HttpStatus.NOT_FOUND);
       }
-      const createdPost = this.postRepository.create({
-        content: content,
+      if (createPostDto.parent_id) {
+        const parent = await this.postRepository.findOneBy({
+          id: createPostDto.parent_id,
+        });
+        if (!parent) {
+          throw new HttpException('post is not exist ', HttpStatus.NOT_FOUND);
+        }
+        parent.replies_count += 1;
+        await this.postRepository.save(parent);
+      }
+      const newPost = this.postRepository.create({
+        content: createPostDto.content,
         author_id: userId,
-        author: author,
+        parent_id: createPostDto.parent_id,
       });
-      return await this.postRepository.save(createdPost);
+
+      return await this.postRepository.save(newPost);
     } catch (error) {
       console.log(error);
       throw new HttpException('failed to create post', 500);
