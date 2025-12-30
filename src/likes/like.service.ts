@@ -29,4 +29,14 @@ export class LikesService {
       return true;
     }
   }
+
+  async isLike(postId: number, userId: number) {
+    const like = await this.likeRepository.findOne({
+      where: { post_id: postId, user_id: userId },
+    });
+    if (like) {
+      return like.is_like;
+    }
+    return false;
+  }
 }

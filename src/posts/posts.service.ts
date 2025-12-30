@@ -98,6 +98,10 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
+  async isLike(postId: number, userId: number) {
+    return await this.likeService.isLike(postId, userId);
+  }
+
   async toggleLike(postId: number, userId: number) {
     const res = await this.likeService.toggle(postId, userId);
     if (res) {
