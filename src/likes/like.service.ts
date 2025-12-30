@@ -16,6 +16,9 @@ export class LikesService {
       const isLike = like.is_like;
       like.is_like = !isLike;
       await this.likeRepository.save(like);
+      if (!isLike) {
+        return true;
+      }
       return false;
     } else {
       const createdLike = this.likeRepository.create({
