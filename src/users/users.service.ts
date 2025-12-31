@@ -58,4 +58,37 @@ export class UsersService {
     Object.assign(user, updateUserDto);
     return await this.userRepository.save(user);
   }
+
+  async increaseFollowersCount(usesrId: number) {
+    const user = await this.findOne(usesrId);
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+    user.followers_count += 1;
+    await this.userRepository.save(user);
+  }
+  async decreaseFollowersCount(usesrId: number) {
+    const user = await this.findOne(usesrId);
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+    user.followers_count -= 1;
+    await this.userRepository.save(user);
+  }
+  async increaseFollowingCount(usesrId: number) {
+    const user = await this.findOne(usesrId);
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+    user.following_count += 1;
+    await this.userRepository.save(user);
+  }
+  async decreaseFollowingCount(usesrId: number) {
+    const user = await this.findOne(usesrId);
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+    user.following_count -= 1;
+    await this.userRepository.save(user);
+  }
 }

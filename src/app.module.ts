@@ -104,10 +104,10 @@ import { Follow } from './follow/dto/follow.entity';
       useClass: ValidationPipe,
     },
     { provide: APP_INTERCEPTOR, useClass: loggingInterceptor },
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: HttpExceptionFilter,
+    // },
   ],
 })
 export class AppModule implements NestModule {
