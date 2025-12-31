@@ -24,6 +24,10 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto): Promise<User> {
+    const user = await this.usersService.findOneByEmail(registerDto.email);
+    if (user) {
+      throw new HttpException('account existed', HttpStatus.CONFLICT);
+    }
     const hashedPassword = await this.hashPassword(registerDto.password!);
     return this.usersService.create({
       ...registerDto,
