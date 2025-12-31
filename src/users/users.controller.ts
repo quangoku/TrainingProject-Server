@@ -23,7 +23,10 @@ import {
 } from '@nestjs/swagger';
 import { GetUserDto } from './dto/get-user.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
-import { CurrentUser } from 'src/common/decorators/user.decoratos';
+import {
+  CurrentUser,
+  type CurrentUserData,
+} from 'src/common/decorators/user.decoratos';
 
 @Controller('users')
 @UseInterceptors(CacheInterceptor)
@@ -43,7 +46,7 @@ export class UsersController {
 
   @Get('/me')
   @UseGuards(JwtAuthGuard)
-  findInfo(@CurrentUser() currentUser) {
+  findInfo(@CurrentUser() currentUser: CurrentUserData) {
     return currentUser;
   }
 

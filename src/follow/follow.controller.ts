@@ -8,7 +8,10 @@ import {
 } from '@nestjs/common';
 import { FollowService } from './follow.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/common/decorators/user.decoratos';
+import {
+  CurrentUser,
+  type CurrentUserData,
+} from 'src/common/decorators/user.decoratos';
 
 @Controller('follow')
 export class FollowController {
@@ -18,7 +21,7 @@ export class FollowController {
   @UseGuards(JwtAuthGuard)
   toggle(
     @Param('targetId', ParseIntPipe) targetId: number,
-    @CurrentUser() currentUser,
+    @CurrentUser() currentUser: CurrentUserData,
   ) {
     return this.followService.toggle(currentUser.id, targetId);
   }
@@ -26,7 +29,7 @@ export class FollowController {
   @Get('/:targetId/is-following')
   @UseGuards(JwtAuthGuard)
   async isFollowing(
-    @CurrentUser() currentUser,
+    @CurrentUser() currentUser: CurrentUserData,
     @Param('targetId', ParseIntPipe) targetId: number,
   ) {
     return this.followService.isFollowing(currentUser.id, targetId);

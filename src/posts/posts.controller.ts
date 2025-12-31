@@ -12,7 +12,10 @@ import {
 import { PostsService } from './posts.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreatePostDto } from './dto/create-post.dto';
-import { CurrentUser } from 'src/common/decorators/user.decoratos';
+import {
+  CurrentUser,
+  type CurrentUserData,
+} from 'src/common/decorators/user.decoratos';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
 
@@ -40,7 +43,10 @@ export class PostsController {
 
   @Post('')
   @UseGuards(JwtAuthGuard)
-  create(@Body() createPostDto: CreatePostDto, @CurrentUser() CurrentUser) {
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @CurrentUser() CurrentUser: CurrentUserData,
+  ) {
     return this.postsService.create(createPostDto, CurrentUser.id);
   }
 
@@ -49,7 +55,7 @@ export class PostsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePostDto: UpdatePostDto,
-    @CurrentUser() CurrentUser,
+    @CurrentUser() CurrentUser: CurrentUserData,
   ) {
     return this.postsService.update(id, updatePostDto, CurrentUser.id);
   }
@@ -58,7 +64,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   async isLike(
     @Param('id', ParseIntPipe) id: number,
-    @CurrentUser() CurrentUser,
+    @CurrentUser() CurrentUser: CurrentUserData,
   ) {
     return await this.postsService.isLike(id, CurrentUser.id);
   }
@@ -67,7 +73,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   toggleLike(
     @Param('id', ParseIntPipe) id: number,
-    @CurrentUser() CurrentUser,
+    @CurrentUser() CurrentUser: CurrentUserData,
   ) {
     return this.postsService.toggleLike(id, CurrentUser.id);
   }
