@@ -26,6 +26,8 @@ import * as Joi from 'joi';
 import { Post } from './posts/entities/post.entity';
 import { Like } from './likes/entities/like.entity';
 import { LikesModule } from './likes/likes.module';
+import { FollowModule } from './follow/follow.module';
+import { Follow } from './follow/dto/follow.entity';
 @Module({
   imports: [
     AuthModule,
@@ -75,7 +77,7 @@ import { LikesModule } from './likes/likes.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, Post, Like],
+        entities: [User, Post, Like, Follow],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -83,6 +85,7 @@ import { LikesModule } from './likes/likes.module';
     FilesModule,
     PostsModule,
     LikesModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,5 @@
 import { Role } from 'src/common/enums/role.enum';
+import { Follow } from 'src/follow/dto/follow.entity';
 import { Like } from 'src/likes/entities/like.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import {
@@ -26,7 +27,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.USER, // Mặc định khi tạo mới là 'user'
+    default: Role.USER,
   })
   role: Role;
 
@@ -38,6 +39,18 @@ export class User {
 
   @Column({ nullable: true })
   bio?: string;
+
+  @Column({ default: 0 })
+  followers_count: number;
+
+  @Column({ default: 0 })
+  following_count: number;
+
+  @OneToMany(() => Follow, (follow) => follow.follower)
+  followers: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.following)
+  followings: Follow[];
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
