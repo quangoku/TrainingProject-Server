@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { LikesService } from 'src/likes/like.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -14,6 +14,7 @@ export class PostsService {
     @InjectRepository(Post) private postRepository: Repository<Post>,
     private readonly likeService: LikesService,
     private readonly mediaService: MediaService,
+    private readonly dataSource: DataSource,
   ) {}
   async findAll(query: GetPostsDto) {
     const { cursor, limit = 6 } = query;
@@ -100,6 +101,10 @@ export class PostsService {
     files: Express.Multer.File[],
     userId: number,
   ): Promise<Post> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       if (createPostDto.parent_id) {
         const parent = await this.postRepository.findOneBy({
@@ -118,10 +123,15 @@ export class PostsService {
       });
       await this.postRepository.save(newPost);
       await this.mediaService.createMediaForPost(newPost.id, files);
+
+      await queryRunner.commitTransaction();
       return newPost;
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       console.log(error);
       throw new HttpException('failed to create post', 500);
+    } finally {
+      await queryRunner.release();
     }
   }
 
