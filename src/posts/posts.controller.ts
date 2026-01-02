@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -76,5 +77,14 @@ export class PostsController {
     @CurrentUser() CurrentUser: CurrentUserData,
   ) {
     return this.postsService.toggleLike(id, CurrentUser.id);
+  }
+
+  @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() CurrentUser: CurrentUserData,
+  ) {
+    return this.postsService.remove(id, CurrentUser.id);
   }
 }

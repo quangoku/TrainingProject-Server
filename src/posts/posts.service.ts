@@ -166,4 +166,18 @@ export class PostsService {
     post.likes_count -= 1;
     return await this.postRepository.save(post);
   }
+
+  async remove(postId: number, userId: number): Promise<Post> {
+    const post = await this.postRepository.findOneBy({ id: postId });
+    if (!post) {
+      throw new HttpException('post not found', HttpStatus.NOT_FOUND);
+    }
+    if (post.author_id !== userId) {
+      throw new HttpException(
+        'You are not the author of this post',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    return await this.postRepository.remove(post);
+  }
 }
