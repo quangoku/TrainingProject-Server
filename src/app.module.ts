@@ -28,6 +28,8 @@ import { Like } from './likes/entities/like.entity';
 import { LikesModule } from './likes/likes.module';
 import { FollowModule } from './follow/follow.module';
 import { Follow } from './follow/dto/follow.entity';
+import { MediaModule } from './media/media.module';
+import { Media } from './media/entities/media.entity';
 @Module({
   imports: [
     AuthModule,
@@ -77,7 +79,7 @@ import { Follow } from './follow/dto/follow.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, Post, Like, Follow],
+        entities: [User, Post, Like, Follow, Media],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -86,6 +88,7 @@ import { Follow } from './follow/dto/follow.entity';
     PostsModule,
     LikesModule,
     FollowModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [

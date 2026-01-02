@@ -2,18 +2,18 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { LikesService } from 'src/likes/like.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post) private postRepository: Repository<Post>,
-    private readonly userService: UsersService,
     private readonly likeService: LikesService,
+    private readonly mediaService: MediaService,
   ) {}
   async findAll(query: GetPostsDto) {
     const { cursor, limit = 6 } = query;
@@ -23,6 +23,7 @@ export class PostsService {
       .orderBy('post.id', 'DESC')
       .take(limit + 1)
       .leftJoin('post.author', 'author')
+      .leftJoinAndSelect('post.media', 'media')
       .addSelect(['author.id', 'author.username', 'author.image']);
     if (cursor) {
       queryBuilder.andWhere(' post.id < :cursor', {
@@ -47,6 +48,7 @@ export class PostsService {
       where: { id },
       relations: {
         author: true,
+        media: true,
       },
       select: {
         author: {
@@ -93,12 +95,12 @@ export class PostsService {
     });
   }
 
-  async create(createPostDto: CreatePostDto, userId: number): Promise<Post> {
+  async create(
+    createPostDto: CreatePostDto,
+    files: Express.Multer.File[],
+    userId: number,
+  ): Promise<Post> {
     try {
-      const author = await this.userService.findOne(userId);
-      if (!author) {
-        throw new HttpException('author not found', HttpStatus.NOT_FOUND);
-      }
       if (createPostDto.parent_id) {
         const parent = await this.postRepository.findOneBy({
           id: createPostDto.parent_id,
@@ -114,8 +116,9 @@ export class PostsService {
         author_id: userId,
         parent_id: createPostDto.parent_id,
       });
-
-      return await this.postRepository.save(newPost);
+      await this.postRepository.save(newPost);
+      await this.mediaService.createMediaForPost(newPost.id, files);
+      return newPost;
     } catch (error) {
       console.log(error);
       throw new HttpException('failed to create post', 500);

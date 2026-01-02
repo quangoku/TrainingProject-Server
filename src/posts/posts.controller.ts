@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -19,6 +21,7 @@ import {
 } from 'src/common/decorators/user.decoratos';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('posts')
 export class PostsController {
@@ -44,11 +47,13 @@ export class PostsController {
 
   @Post('')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
   create(
     @Body() createPostDto: CreatePostDto,
     @CurrentUser() CurrentUser: CurrentUserData,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.postsService.create(createPostDto, CurrentUser.id);
+    return this.postsService.create(createPostDto, files, CurrentUser.id);
   }
 
   @Patch('/:id')

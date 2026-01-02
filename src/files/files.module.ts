@@ -15,5 +15,6 @@ import { AWSAdapter } from './adapters/aws.adapter';
     cloudinaryProvider,
     awsProvider,
   ],
+  exports: [FilesService],
 })
 export class FilesModule {}
