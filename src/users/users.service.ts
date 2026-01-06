@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
@@ -90,5 +90,23 @@ export class UsersService {
     }
     user.following_count -= 1;
     await this.userRepository.save(user);
+  }
+
+  async findRandomUsers(): Promise<User[]> {
+    return await this.userRepository
+      .createQueryBuilder('users')
+      .orderBy('RANDOM()')
+      .limit(5)
+      .getMany();
+  }
+  async searchUsers(query: string): Promise<User[]> {
+    return await this.userRepository.find({
+      where: [
+        {
+          username: Like(`%${query}%`),
+        },
+      ],
+      select: ['id', 'username', 'bio', 'image'],
+    });
   }
 }

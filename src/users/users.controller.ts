@@ -3,10 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  OnModuleInit,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -49,7 +51,14 @@ export class UsersController {
   findInfo(@CurrentUser() currentUser: CurrentUserData) {
     return currentUser;
   }
-
+  @Get('/random')
+  async findRandomUsers(): Promise<User[]> {
+    return this.usersService.findRandomUsers();
+  }
+  @Get('/search')
+  async searchUsers(@Query('q') query: string): Promise<User[]> {
+    return this.usersService.searchUsers(query);
+  }
   @Get('/:id')
   @ApiResponse({
     status: 200,
