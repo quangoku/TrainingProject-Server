@@ -11,5 +11,5 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString() // must be a string
   @MinLength(6) // require min length = 6
-  password?: string;
+  bio?: string;
 }

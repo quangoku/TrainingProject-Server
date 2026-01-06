@@ -81,17 +81,17 @@ export class UsersController {
     const { password, ...result } = createdUser;
     return result;
   }
-  @Patch('/:id')
+  @Patch('')
   @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({
     type: GetUserDto,
   })
   @ApiOperation({ summary: 'Update user information by ID' })
   async update(
-    @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() currentUser: CurrentUserData,
   ) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(currentUser.id, updateUserDto);
   }
   @ApiResponse({
     status: 200,
