@@ -4,11 +4,11 @@ import { PostsController } from './posts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UsersModule } from '../users/users.module';
 import { LikesModule } from '../likes/likes.module';
 import { FilesModule } from '../files/files.module';
 import { MediaModule } from '../media/media.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   controllers: [PostsController],
@@ -21,12 +21,9 @@ import { MediaModule } from '../media/media.module';
     MediaModule,
     ClientsModule.register([
       {
-        name: 'POST_SERVICE',
+        name: 'POST_CLIENT',
         transport: Transport.REDIS,
-        options: {
-          host: 'localhost',
-          port: 6379,
-        },
+        options: { host: 'localhost', port: 6379 },
       },
     ]),
   ],

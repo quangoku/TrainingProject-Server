@@ -16,7 +16,7 @@ export class PostsService {
     private readonly likeService: LikesService,
     private readonly mediaService: MediaService,
     private readonly dataSource: DataSource,
-    @Inject('POST_SERVICE') private readonly client: ClientProxy,
+    @Inject('POST_CLIENT') private readonly client: ClientProxy,
   ) {}
   async findAll(query: GetPostsDto) {
     const { cursor, limit = 6 } = query;
@@ -143,7 +143,7 @@ export class PostsService {
       await this.mediaService.createMediaForPost(newPost.id, files);
 
       await queryRunner.commitTransaction();
-      this.client.emit('post_created', { newPost });
+      this.client.emit('post_created', {});
       return newPost;
     } catch (error) {
       await queryRunner.rollbackTransaction();
