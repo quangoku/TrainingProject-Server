@@ -143,7 +143,10 @@ export class PostsService {
       await this.mediaService.createMediaForPost(newPost.id, files);
 
       await queryRunner.commitTransaction();
-      this.client.emit('post_created', {});
+      if (!createPostDto.parent_id) {
+        const sentData = await this.findOneById(newPost.id);
+        this.client.emit('post_created', { post: sentData });
+      }
       return newPost;
     } catch (error) {
       await queryRunner.rollbackTransaction();

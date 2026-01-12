@@ -7,8 +7,8 @@ export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @EventPattern('post_created')
-  getHello(): string {
-    console.log('i got message');
-    return this.notificationsService.getHello();
+  async getHello(data: any) {
+    const { post } = data;
+    await this.notificationsService.processNewPostNotification(post);
   }
 }
