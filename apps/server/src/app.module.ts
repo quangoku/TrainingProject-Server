@@ -26,6 +26,7 @@ import { LikesModule } from './likes/likes.module';
 import { FollowModule } from './follow/follow.module';
 import { MediaModule } from './media/media.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { DatabaseModule } from '@app/database';
 @Module({
   imports: [
     AuthModule,
@@ -71,20 +72,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     }),
 
     //config type orm here
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
-      inject: [ConfigService],
-    }),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [
@@ -94,10 +82,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       useClass: AuthGuard,
     },
     AppService,
-    {
-      provide: APP_PIPE,
-      useClass: FreezePipe,
-    },
+    // {
+    //   provide: APP_PIPE,
+    //   useClass: FreezePipe,
+    // },
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
