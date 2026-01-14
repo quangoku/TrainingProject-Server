@@ -8,6 +8,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
 import { MediaService } from '../media/media.service';
 import { ClientProxy } from '@nestjs/microservices';
+import { CLIENTS, EVENTS } from 'apps/constants';
 
 @Injectable()
 export class PostsService {
@@ -16,7 +17,8 @@ export class PostsService {
     private readonly likeService: LikesService,
     private readonly mediaService: MediaService,
     private readonly dataSource: DataSource,
-    @Inject('POST_CLIENT') private readonly client: ClientProxy,
+    @Inject(CLIENTS.NOTIFICATION_SERVICE)
+    private readonly client: ClientProxy,
   ) {}
   async findAll(query: GetPostsDto) {
     const { cursor, limit = 6 } = query;
@@ -149,7 +151,7 @@ export class PostsService {
       await queryRunner.commitTransaction();
       if (!createPostDto.parent_id) {
         const sentData = await this.findOneById(newPost.id);
-        this.client.emit('post_created', { post: sentData });
+        this.client.emit(EVENTS.POST_CREATED, { post: sentData });
       }
       return newPost;
     } catch (error) {

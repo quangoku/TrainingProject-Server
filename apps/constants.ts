@@ -1,0 +1,6 @@
+export const CLIENTS = {
+  NOTIFICATION_SERVICE: 'NOTIFICATION_SERVICE',
+};
+export const EVENTS = {
+  POST_CREATED: 'POST_CREATED',
+};

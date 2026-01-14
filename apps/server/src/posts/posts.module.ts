@@ -9,6 +9,7 @@ import { LikesModule } from '../likes/likes.module';
 import { FilesModule } from '../files/files.module';
 import { MediaModule } from '../media/media.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CLIENTS } from 'apps/constants';
 
 @Module({
   controllers: [PostsController],
@@ -21,7 +22,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     MediaModule,
     ClientsModule.register([
       {
-        name: 'POST_CLIENT',
+        name: CLIENTS.NOTIFICATION_SERVICE,
         transport: Transport.REDIS,
         options: { host: 'localhost', port: 6379 },
       },
