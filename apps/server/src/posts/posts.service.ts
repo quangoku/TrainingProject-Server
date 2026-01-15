@@ -120,6 +120,18 @@ export class PostsService {
     });
   }
 
+  async findAllSavedPostByUserId(userId: number) {
+    const query = this.postRepository.createQueryBuilder('post');
+    query
+      .innerJoin('saved_post', 'saved_post', 'saved_post.post_id = post.id')
+      .where('saved_post.user_id = :userId', { userId })
+      .andWhere('saved_post.is_saved = :isSaved', { isSaved: true })
+      .leftJoin('post.author', 'author')
+      .addSelect(['author.id', 'author.username', 'author.image'])
+      .leftJoinAndSelect('post.media', 'media');
+    return await query.getMany();
+  }
+
   async create(
     createPostDto: CreatePostDto,
     files: Express.Multer.File[],

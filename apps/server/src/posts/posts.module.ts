@@ -10,6 +10,7 @@ import { FilesModule } from '../files/files.module';
 import { MediaModule } from '../media/media.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CLIENTS } from 'apps/constants';
+import { SaveModule } from '../save/save.module';
 
 @Module({
   controllers: [PostsController],
@@ -20,6 +21,7 @@ import { CLIENTS } from 'apps/constants';
     LikesModule,
     FilesModule,
     MediaModule,
+    SaveModule,
     ClientsModule.register([
       {
         name: CLIENTS.NOTIFICATION_SERVICE,

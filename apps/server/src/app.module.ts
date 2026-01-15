@@ -27,6 +27,7 @@ import { FollowModule } from './follow/follow.module';
 import { MediaModule } from './media/media.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { DatabaseModule } from '@app/database';
+import { SaveModule } from './save/save.module';
 @Module({
   imports: [
     AuthModule,
@@ -36,6 +37,7 @@ import { DatabaseModule } from '@app/database';
     LikesModule,
     FollowModule,
     MediaModule,
+    SaveModule,
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: (configService: ConfigService) => {

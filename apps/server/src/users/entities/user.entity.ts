@@ -9,6 +9,7 @@ import { Role } from '../../common/enums/role.enum';
 import { Follow } from '../../follow/dto/follow.entity';
 import { Post } from '../../posts/entities/post.entity';
 import { Like } from '../../likes/entities/like.entity';
+import { SavedPost } from '../../save/entities/save.entity';
 
 @Entity('users')
 export class User {
@@ -57,4 +58,7 @@ export class User {
 
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
+
+  @OneToMany(() => SavedPost, (savedPost) => savedPost.user)
+  savedPosts: SavedPost[];
 }
