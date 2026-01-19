@@ -55,6 +55,7 @@ import { ReactionModule } from './reaction/reaction.module';
 
         SESSION_SECRET: Joi.string().min(5).required(),
 
+        DB_TYPE: Joi.string().required(),
         DB_HOST: Joi.string().hostname().required(),
         DB_PORT: Joi.number().port().required(),
         DB_USERNAME: Joi.string().required(),
