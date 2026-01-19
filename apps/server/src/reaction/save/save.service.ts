@@ -14,7 +14,7 @@ export class SaveService {
     const savedPost = await this.savedPostRepository.findOne({
       where: { post_id: postId, user_id: userId },
     });
-    return !!savedPost;
+    return savedPost?.is_saved;
   }
 
   async toggle(postId: number, userId: number) {

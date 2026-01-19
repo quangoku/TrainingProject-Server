@@ -14,7 +14,6 @@ import { FreezePipe } from './common/pipes/freeze.pipe';
 import { AuthGuard } from './common/guards/auth.guard';
 import { loggingInterceptor } from './common/interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './common/exception-filters/http-exception.filter';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FilesModule } from './files/files.module';
@@ -22,22 +21,20 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { PostsModule } from './posts/posts.module';
 import KeyvRedis from '@keyv/redis';
 import * as Joi from 'joi';
-import { LikesModule } from './likes/likes.module';
 import { FollowModule } from './follow/follow.module';
 import { MediaModule } from './media/media.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { DatabaseModule } from '@app/database';
-import { SaveModule } from './save/save.module';
+import { ReactionModule } from './reaction/reaction.module';
 @Module({
   imports: [
     AuthModule,
     UsersModule,
     FilesModule,
     PostsModule,
-    LikesModule,
     FollowModule,
     MediaModule,
-    SaveModule,
+    DatabaseModule,
+    ReactionModule,
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: (configService: ConfigService) => {
@@ -72,9 +69,6 @@ import { SaveModule } from './save/save.module';
         MEZON_USER_URL: Joi.string().uri().required(),
       }),
     }),
-
-    //config type orm here
-    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [

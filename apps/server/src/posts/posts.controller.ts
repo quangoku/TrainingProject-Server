@@ -22,7 +22,7 @@ import {
 import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { SaveService } from '../save/save.service';
+import { SaveService } from '../reaction/save/save.service';
 
 @Controller('posts')
 export class PostsController {

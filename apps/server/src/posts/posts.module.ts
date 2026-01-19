@@ -3,25 +3,20 @@ import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-
-import { UsersModule } from '../users/users.module';
-import { LikesModule } from '../likes/likes.module';
 import { FilesModule } from '../files/files.module';
 import { MediaModule } from '../media/media.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CLIENTS } from 'apps/constants';
-import { SaveModule } from '../save/save.module';
+import { ReactionModule } from '../reaction/reaction.module';
 
 @Module({
   controllers: [PostsController],
   providers: [PostsService],
   imports: [
     TypeOrmModule.forFeature([Post]),
-    UsersModule,
-    LikesModule,
     FilesModule,
     MediaModule,
-    SaveModule,
+    ReactionModule,
     ClientsModule.register([
       {
         name: CLIENTS.NOTIFICATION_SERVICE,

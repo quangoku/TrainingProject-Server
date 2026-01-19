@@ -8,9 +8,8 @@ import {
 import { Role } from '../../common/enums/role.enum';
 import { Follow } from '../../follow/dto/follow.entity';
 import { Post } from '../../posts/entities/post.entity';
-import { Like } from '../../likes/entities/like.entity';
-import { SavedPost } from '../../save/entities/save.entity';
-
+import { SavedPost } from '../../reaction/save/entities/save.entity';
+import { Like } from '../../reaction/likes/entities/like.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()

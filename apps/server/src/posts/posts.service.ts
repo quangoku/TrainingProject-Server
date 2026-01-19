@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { DataSource, IsNull, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { LikesService } from '../likes/like.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
 import { MediaService } from '../media/media.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { CLIENTS, EVENTS } from 'apps/constants';
+import { LikesService } from '../reaction/likes/like.service';
 
 @Injectable()
 export class PostsService {

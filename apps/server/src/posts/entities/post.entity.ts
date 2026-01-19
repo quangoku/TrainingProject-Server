@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Like } from '../../likes/entities/like.entity';
 import { Media } from '../../media/entities/media.entity';
+import { Like } from '../../reaction/likes/entities/like.entity';
 
 @Entity('posts')
 export class Post {
