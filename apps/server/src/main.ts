@@ -23,7 +23,6 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-
   const config = new DocumentBuilder()
     .setTitle('user-system')
     .setDescription('user-system API description')

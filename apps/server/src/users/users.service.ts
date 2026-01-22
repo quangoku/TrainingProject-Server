@@ -64,32 +64,28 @@ export class UsersService {
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
-    user.followers_count += 1;
-    await this.userRepository.save(user);
+    await this.userRepository.increment({ id: usesrId }, 'followers_count', 1);
   }
   async decreaseFollowersCount(usesrId: number) {
     const user = await this.findOne(usesrId);
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
-    user.followers_count -= 1;
-    await this.userRepository.save(user);
+    await this.userRepository.decrement({ id: usesrId }, 'followers_count', 1);
   }
   async increaseFollowingCount(usesrId: number) {
     const user = await this.findOne(usesrId);
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
-    user.following_count += 1;
-    await this.userRepository.save(user);
+    await this.userRepository.increment({ id: usesrId }, 'following_count', 1);
   }
   async decreaseFollowingCount(usesrId: number) {
     const user = await this.findOne(usesrId);
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
-    user.following_count -= 1;
-    await this.userRepository.save(user);
+    await this.userRepository.decrement({ id: usesrId }, 'following_count', 1);
   }
 
   async findRandomUsers(): Promise<User[]> {

@@ -149,8 +149,11 @@ export class PostsService {
         if (!parent) {
           throw new HttpException('post is not exist ', HttpStatus.NOT_FOUND);
         }
-        parent.replies_count += 1;
-        await this.postRepository.save(parent);
+        await this.postRepository.increment(
+          { id: parent.id },
+          'replies_count',
+          1,
+        );
       }
       const newPost = this.postRepository.create({
         content: createPostDto.content,
@@ -208,16 +211,19 @@ export class PostsService {
     if (!post) {
       throw new HttpException('post not found', HttpStatus.NOT_FOUND);
     }
-    post.likes_count += 1;
-    return await this.postRepository.save(post);
+
+    await this.postRepository.increment({ id: postId }, 'likes_count', 1);
+    return await this.postRepository.findOneBy({ id: postId });
   }
   async decreaseLikeCount(postId: number) {
     const post = await this.postRepository.findOneBy({ id: postId });
     if (!post) {
       throw new HttpException('post not found', HttpStatus.NOT_FOUND);
     }
-    post.likes_count -= 1;
-    return await this.postRepository.save(post);
+
+    await this.postRepository.decrement({ id: postId }, 'likes_count', 1);
+
+    return await this.postRepository.findOneBy({ id: postId });
   }
 
   async remove(postId: number, userId: number): Promise<Post> {
