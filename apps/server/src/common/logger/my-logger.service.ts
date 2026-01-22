@@ -41,9 +41,15 @@ export class LoggerService extends ConsoleLogger {
     super.error(message, trace);
   }
   warn(message: string) {
+    this.winstonLogger.warn('warn', message, {
+      context: this.context,
+    });
     super.warn(message);
   }
   log(message: string) {
+    this.winstonLogger.log('info', message, {
+      context: this.context,
+    });
     super.log(message);
   }
   debug(message: string) {

@@ -9,9 +9,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { UsersController } from './users/users.controller';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { FreezePipe } from './common/pipes/freeze.pipe';
-import { AuthGuard } from './common/guards/auth.guard';
 import { loggingInterceptor } from './common/interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './common/exception-filters/http-exception.filter';
 import { AuthModule } from './auth/auth.module';
@@ -75,11 +74,6 @@ import { LoggerModule } from './common/logger/logger.module';
   ],
   controllers: [AppController],
   providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
     AppService,
     {
       provide: APP_PIPE,
