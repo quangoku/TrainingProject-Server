@@ -13,7 +13,7 @@ export class NotificationsGateway
   server: Server;
 
   async handleConnection(client: Socket, ...args: any[]) {
-    const userId = client.handshake.auth.userId;
+    const userId = client.handshake.auth.userId as number;
     console.log('userid', userId);
     await client.join(`user_${userId}`);
   }

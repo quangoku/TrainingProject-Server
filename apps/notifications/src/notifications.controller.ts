@@ -1,15 +1,23 @@
 import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { CMD } from 'apps/constants';
 import { NotificationsService } from './notifications.service';
-import { EventPattern } from '@nestjs/microservices';
-import { EVENTS } from 'apps/constants';
 
 @Controller()
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(private readonly notificationService: NotificationsService) {}
+  @MessagePattern(CMD.GET_NOTIFICATION)
+  async getNotification(@Payload() data: { userId: number }) {
+    return await this.notificationService.getNotifications(data.userId);
+  }
 
-  @EventPattern(EVENTS.POST_CREATED)
-  async getHello(data: any) {
-    const { post } = data;
-    await this.notificationsService.processNewPostNotification(post);
+  @MessagePattern(CMD.MARK_AS_READ)
+  async markAsRead(@Payload() data: { notificationId: string }) {
+    return await this.notificationService.markAsRead(data.notificationId);
+  }
+
+  @MessagePattern(CMD.MARK_ALL_AS_READ)
+  async markAllAsRead(@Payload() data: { userId: number }) {
+    return await this.notificationService.markAllAsRead(data.userId);
   }
 }
