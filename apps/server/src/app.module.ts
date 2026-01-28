@@ -26,6 +26,7 @@ import { DatabaseModule } from '@app/database';
 import { ReactionModule } from './reaction/reaction.module';
 import { LoggerModule } from '../../../libs/common/src/logger/logger.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { BullModule } from '@nestjs/bullmq';
 @Module({
   imports: [
     AuthModule,
@@ -37,6 +38,17 @@ import { NotificationsModule } from './notifications/notifications.module';
     DatabaseModule,
     ReactionModule,
     LoggerModule,
+    BullModule.forRootAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          connection: {
+            host: configService.getOrThrow<string>('REDIS_HOST'),
+            port: configService.getOrThrow<number>('REDIS_PORT'),
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: (configService: ConfigService) => {

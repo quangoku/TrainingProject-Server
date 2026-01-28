@@ -5,22 +5,26 @@ import { DataSource, IsNull, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
-import { MediaService } from '../media/media.service';
 import { JOBS, QUEUES } from 'apps/constants';
 import { LikesService } from '../reaction/likes/like.service';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { LoggerService } from '@app/common/logger/my-logger.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post) private postRepository: Repository<Post>,
     private readonly likeService: LikesService,
-    private readonly mediaService: MediaService,
     private readonly dataSource: DataSource,
+    private readonly logger: LoggerService,
     @InjectQueue(QUEUES.NOTIFICATION_QUEUE)
     private readonly notificationQueue: Queue,
-  ) {}
+    @InjectQueue(QUEUES.MEDIA_QUEUE)
+    private readonly mediaQueue: Queue,
+  ) {
+    this.logger.setContext(PostsService.name);
+  }
   async findAll(query: GetPostsDto) {
     const { cursor, limit = 6 } = query;
     const queryBuilder = this.postRepository
@@ -161,7 +165,11 @@ export class PostsService {
         parent_id: createPostDto.parent_id,
       });
       await this.postRepository.save(newPost);
-      await this.mediaService.createMediaForPost(newPost.id, files);
+      this.logger.debug(files);
+      await this.mediaQueue.add(JOBS.CREATE_MEDIA, {
+        postId: newPost.id,
+        files: files,
+      });
 
       await queryRunner.commitTransaction();
       if (!createPostDto.parent_id) {
@@ -180,7 +188,7 @@ export class PostsService {
       return newPost;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.log(error);
+      this.logger.error(error, 'failed to create post');
       throw new HttpException('failed to create post', 500);
     } finally {
       await queryRunner.release();
