@@ -46,6 +46,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.9",
     "@nestjs/platform-socket.io": "^11.1.11",
+    "@nestjs/schedule": "^6.1.0",
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/typeorm": "^11.0.0",
     "@nestjs/websockets": "^11.1.11",
@@ -78,6 +79,7 @@
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.3",
     "typeorm": "^0.3.28",
+    "typeorm-transactional": "^0.5.0",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0",
     "winston-transport-sentry-node": "^3.0.0"

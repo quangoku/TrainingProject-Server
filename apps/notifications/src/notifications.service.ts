@@ -60,7 +60,6 @@ export class NotificationsService {
       postId: post.id as number,
       isRead: false,
     }));
-    this.logger.log(notificationData);
     await this.notificationModel.insertMany(notificationData);
     this.notificationsGateway.sendToFollowers(followersId, post);
     return;
