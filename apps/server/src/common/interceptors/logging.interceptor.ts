@@ -22,7 +22,7 @@ export class loggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         const delay = Date.now() - now;
-        // this.logger.log(`${request.method} ${request.url} - ${delay}ms`);
+        this.logger.log(`${request.method} ${request.url} - ${delay}ms`);
       }),
       map((data) => ({
         data,

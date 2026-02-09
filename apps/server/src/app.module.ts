@@ -95,10 +95,6 @@ import { ScheduleModule } from '@nestjs/schedule';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_PIPE,
-    //   useClass: FreezePipe,
-    // },
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,

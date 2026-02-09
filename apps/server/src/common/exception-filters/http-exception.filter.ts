@@ -17,7 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    response.status(exception.getStatus()).json({
+    response.json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,

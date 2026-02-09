@@ -18,6 +18,7 @@ async function bootstrap() {
     credentials: true,
   }); // port for front-end
   app.use(cookieParser());
+  // session for oauth to save state
   app.use(
     session({
       secret: process.env.SESSION_SECRET!,
