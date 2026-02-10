@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Notification } from './entities/notifications.schema';
 import { Model } from 'mongoose';
 import { LoggerService } from '@app/common/logger/my-logger.service';
+import { JOBS } from 'apps/constants';
 
 @Injectable()
 export class NotificationsService {
@@ -21,9 +22,11 @@ export class NotificationsService {
   }
 
   async getNotifications(userId: number) {
-    const notifications = await this.notificationModel.find({
-      recipientId: userId,
-    });
+    const notifications = await this.notificationModel
+      .find({
+        recipientId: userId,
+      })
+      .sort({ createdAt: -1 });
     return notifications;
   }
 
@@ -45,18 +48,17 @@ export class NotificationsService {
     return notifications;
   }
 
-  async sendNotification(post: any) {
+  async sendNewPostNotification(post: any) {
     const followers = await this.getFollowersByUserId(post.author_id);
     const followersId = followers.map((follower) => follower.id);
     if (followersId.length === 0) {
       return;
     }
-
     const notificationData = followersId.map((followerId) => ({
       recipientId: followerId as number,
       senderId: post.author_id as number,
-      type: 'NEW_POST',
-      content: `User ${post.author_id} has posted a new thread`,
+      type: JOBS.NEW_POST,
+      content: ` has posted a new thread`,
       postId: post.id as number,
       isRead: false,
     }));

@@ -102,7 +102,14 @@ export class UsersService {
           username: ILike(`%${query}%`),
         },
       ],
-      select: ['id', 'username', 'bio', 'image'],
+      select: [
+        'id',
+        'username',
+        'bio',
+        'image',
+        'followers_count',
+        'following_count',
+      ],
     });
   }
 }

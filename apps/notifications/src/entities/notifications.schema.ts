@@ -12,6 +12,12 @@ export class Notification extends Document {
   @Prop({ required: true })
   content: string;
 
+  @Prop({ required: true })
+  postId: number;
+
+  @Prop({ required: true })
+  type: string;
+
   @Prop({ default: false })
   isRead: boolean;
 

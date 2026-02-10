@@ -10,7 +10,7 @@ export class NotificationProcessor extends WorkerHost {
   }
   async process(job: Job): Promise<any> {
     const post = job.data.post;
-    await this.notificationService.sendNotification(post);
+    await this.notificationService.sendNewPostNotification(post);
     return post;
   }
 }
