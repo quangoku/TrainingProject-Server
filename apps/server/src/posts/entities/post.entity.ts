@@ -11,6 +11,7 @@ import {
 import { User } from '../../users/entities/user.entity';
 import { Media } from '../../media/entities/media.entity';
 import { Like } from '../../reaction/likes/entities/like.entity';
+import { SavedPost } from '../../reaction/save/entities/save.entity';
 
 @Entity('posts')
 export class Post {
@@ -38,6 +39,9 @@ export class Post {
 
   @OneToMany(() => Like, (like) => like.post)
   likes: Like[];
+
+  @OneToMany(() => SavedPost, (savedPost) => savedPost.post)
+  savedPosts: SavedPost[];
 
   @ManyToOne(() => Post, (post) => post.replies, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'parent_id' })

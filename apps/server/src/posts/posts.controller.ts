@@ -20,6 +20,7 @@ import {
 import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsDto } from './dto/get-post.dto';
 import { SaveService } from '../reaction/save/save.service';
+import { OptionalJwtAuthGuard } from '../common/guards/Optional-jwt-auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -29,8 +30,15 @@ export class PostsController {
   ) {}
 
   @Get('')
-  async findAll(@Query() query: GetPostsDto) {
-    return await this.postsService.findAll(query);
+  @UseGuards(OptionalJwtAuthGuard)
+  async findAll(
+    @Query() query: GetPostsDto,
+    @CurrentUser() CurrentUser: CurrentUserData,
+  ) {
+    if (CurrentUser) {
+      console.log('user login now will retrive data for post');
+    }
+    return await this.postsService.findAll(query, CurrentUser?.id);
   }
   @Get('/saved')
   @UseGuards(JwtAuthGuard)
@@ -42,14 +50,23 @@ export class PostsController {
     return await this.postsService.findOneById(id);
   }
   @Get('/users/:userId')
+  @UseGuards(OptionalJwtAuthGuard)
   async findAllParentPostByUserId(
     @Param('userId', ParseIntPipe) userId: number,
+    @CurrentUser() currentUser: CurrentUserData,
   ) {
-    return await this.postsService.findAllParentPostByUserId(userId);
+    return await this.postsService.findAllParentPostByUserId(
+      userId,
+      currentUser?.id,
+    );
   }
   @Get('/:id/replies')
-  async findAllByParentId(@Param('id', ParseIntPipe) id: number) {
-    return await this.postsService.findAllByParentId(id);
+  @UseGuards(OptionalJwtAuthGuard)
+  async findAllByParentId(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() CurrentUser: CurrentUserData,
+  ) {
+    return await this.postsService.findAllByParentId(id, CurrentUser?.id);
   }
 
   @Post('')
