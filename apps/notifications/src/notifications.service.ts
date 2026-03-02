@@ -8,6 +8,7 @@ import { Notification } from './entities/notifications.schema';
 import { Model } from 'mongoose';
 import { LoggerService } from '@app/common/logger/my-logger.service';
 import { JOBS } from 'apps/constants';
+import { Post } from 'apps/server/src/posts/entities/post.entity';
 
 @Injectable()
 export class NotificationsService {
@@ -15,6 +16,7 @@ export class NotificationsService {
     private readonly notificationsGateway: NotificationsGateway,
     private readonly logger: LoggerService,
     @InjectRepository(Follow) private followRepository: Repository<Follow>,
+    @InjectRepository(Post) private userRepository: Repository<Post>,
     @InjectModel(Notification.name)
     private notificationModel: Model<Notification>,
   ) {
@@ -56,15 +58,42 @@ export class NotificationsService {
     }
     const notificationData = followersId.map((followerId) => ({
       recipientId: followerId as number,
-      senderId: post.author_id as number,
+      issuer: post.author,
       type: JOBS.NEW_POST,
-      content: ` has posted a new thread`,
+      content: `${post.author.username} has posted a new thread`,
       postId: post.id as number,
       isRead: false,
     }));
+
+    const sentData = {
+      issuer: post.author,
+      type: JOBS.NEW_POST,
+      content: `${post.author.username} has posted a new thread`,
+      postId: post.id as number,
+    };
+
     await this.notificationModel.insertMany(notificationData);
-    this.notificationsGateway.sendToFollowers(followersId, post);
+    this.notificationsGateway.sendNotifications(followersId, sentData);
     return;
+  }
+  async sendNewCommentNotification(post: any) {
+    const recipientId = await this.getUserIdByPostId(post.parent_id);
+    const notificationData = {
+      recipientId: recipientId,
+      issuer: post.author,
+      type: JOBS.NEW_COMMENT,
+      content: `${post.author.username} has comment in your post`,
+      postId: post.id as number,
+      isRead: false,
+    };
+    const sentData = {
+      issuer: post.author,
+      type: JOBS.NEW_COMMENT,
+      content: `${post.author.username} has comment in your post`,
+      postId: post.id as number,
+    };
+    await this.notificationModel.insertOne(notificationData);
+    this.notificationsGateway.sendNotifications([recipientId], sentData);
   }
 
   async getFollowersByUserId(userId: number) {
@@ -75,5 +104,12 @@ export class NotificationsService {
       .select(['u.id as id', 'u.username as username', 'u.email as email'])
       .getRawMany();
     return followers;
+  }
+
+  async getUserIdByPostId(postId: number) {
+    const post = await this.userRepository.findOne({
+      where: { id: postId },
+    });
+    return post?.author_id;
   }
 }

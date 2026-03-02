@@ -17,7 +17,7 @@ export const QUEUES = {
 export const JOBS = {
   NEW_POST: 'NEW_POST',
   LIKE_POST: 'LIKE_POST',
-  COMMENT_POST: 'COMMENT_POST',
+  NEW_COMMENT: 'NEW_COMMENT',
   CREATE_MEDIA: 'CREATE_MEDIA',
 };
 

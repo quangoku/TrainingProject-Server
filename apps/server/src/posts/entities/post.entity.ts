@@ -7,7 +7,6 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Media } from '../../media/entities/media.entity';

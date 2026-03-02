@@ -14,7 +14,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
+    "start": "concurrently \"nest start \" \"nest start notifications\"",
     "start:dev": "concurrently \"nest start --watch\" \"nest start notifications --watch\"",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/server/main",

@@ -28,7 +28,7 @@ export class AuthService {
     if (user) {
       throw new HttpException('account existed', HttpStatus.CONFLICT);
     }
-    const hashedPassword = await this.hashPassword(registerDto.password!);
+    const hashedPassword = await this.hashPassword(registerDto.password);
     const newUser = await this.usersService.create({
       ...registerDto,
       password: hashedPassword,

@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { NotificationsService } from './notifications.service';
-import { QUEUES } from 'apps/constants';
+import { JOBS, QUEUES } from 'apps/constants';
 
 @Processor(QUEUES.NOTIFICATION_QUEUE)
 export class NotificationProcessor extends WorkerHost {
@@ -10,7 +10,11 @@ export class NotificationProcessor extends WorkerHost {
   }
   async process(job: Job): Promise<any> {
     const post = job.data.post;
-    await this.notificationService.sendNewPostNotification(post);
+    if (job.name == JOBS.NEW_POST) {
+      await this.notificationService.sendNewPostNotification(post);
+    } else if (job.name == JOBS.NEW_COMMENT) {
+      await this.notificationService.sendNewCommentNotification(post);
+    }
     return post;
   }
 }

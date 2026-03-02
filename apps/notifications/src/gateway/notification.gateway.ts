@@ -31,15 +31,15 @@ export class NotificationsGateway
     console.log('Client disconnected:', userId);
   }
 
-  sendToFollowers(followerIds: any[], data: any) {
-    const onlineFollowerIds = followerIds.filter(
+  sendNotifications(userIds: any[], data: any) {
+    const onlineUserIds = userIds.filter(
       (id: number) => this.onlineUsers.get(id) === true,
     );
-    console.log(onlineFollowerIds);
-    if (onlineFollowerIds.length === 0) {
+    console.log(onlineUserIds);
+    if (onlineUserIds.length === 0) {
       return;
     }
-    const rooms = onlineFollowerIds.map((id) => `user_${id}`);
+    const rooms = onlineUserIds.map((id) => `user_${id}`);
     this.server.to(rooms).emit(`notification`, data);
     return;
   }

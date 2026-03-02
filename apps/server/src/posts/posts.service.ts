@@ -226,6 +226,15 @@ export class PostsService {
         await this.queueService.add(QUEUES.NOTIFICATION_QUEUE, JOBS.NEW_POST, {
           post: sentData,
         });
+      } else {
+        const sentData = await this.findOneById(newPost.id);
+        await this.queueService.add(
+          QUEUES.NOTIFICATION_QUEUE,
+          JOBS.NEW_COMMENT,
+          {
+            post: sentData,
+          },
+        );
       }
     } catch (error) {
       this.logger.warn('failed send notification');
