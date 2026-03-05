@@ -21,7 +21,6 @@ export class NotificationsGateway
     }
     await client.join(`user_${userId}`);
     console.log('Client connected:', userId);
-    console.log(this.onlineUsers);
   }
   handleDisconnect(client: Socket) {
     const userId = client.handshake.auth.userId as number;
@@ -35,7 +34,6 @@ export class NotificationsGateway
     const onlineUserIds = userIds.filter(
       (id: number) => this.onlineUsers.get(id) === true,
     );
-    console.log(onlineUserIds);
     if (onlineUserIds.length === 0) {
       return;
     }
