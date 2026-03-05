@@ -13,8 +13,6 @@ jobs:
   steps:
     - run: echo "ci is running"
     - uses: actions/checkout@v2
-      with: 
-        node-version: 20
     - run: npm ci 
     - run: npm test
     - run: npm run build 
