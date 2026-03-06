@@ -1,0 +1,24 @@
+name: MeBlox deployment
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2 #get the code
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4 #setup docker ubild
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3 #login docker account
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }} #set secret in github action secret
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and Push
+        uses: docker/build-push-action@v6 # build and push action
+        with:
+          push: true
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/meblox:latest
